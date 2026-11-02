@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { spawn } from '../src/index.js';
+import { createBoard, spawn } from '../src/index.js';
 
 /** @param {number[][]} rows */
 function board(rows) {
@@ -130,5 +130,22 @@ describe('spawn', () => {
 		assert.throws(() => spawn(empty, () => 1), RangeError);
 		assert.throws(() => spawn(empty, () => -0.1), RangeError);
 		assert.throws(() => spawn(empty, /** @type {any} */ (null)), TypeError);
+	});
+});
+
+describe('createBoard', () => {
+	it('starts a game with exactly two tiles', () => {
+		const output = createBoard(sequenceRng([0, 0, 0, 0]));
+
+		assert.equal(countTiles(output), 2);
+		assert.equal(output[0][0], 2);
+		assert.equal(output[0][1], 2);
+	});
+
+	it('returns a different board for a different rng sequence', () => {
+		const first = createBoard(sequenceRng([0.9, 0.95, 0.1, 0.1]));
+		const second = createBoard(sequenceRng([0, 0, 0, 0]));
+
+		assert.notDeepEqual(first, second);
 	});
 });

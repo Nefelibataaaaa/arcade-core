@@ -3,9 +3,11 @@
 Pure, dependency-free **2048 game logic** for JavaScript. It has no Svelte, DOM,
 browser, or Node-only dependencies, so it runs anywhere JavaScript runs.
 
-- No side effects: every function returns a new board and never mutates its input.
-- No randomness unless you want it: `spawn` accepts an optional random function.
-- No framework code: only board maths lives here.
+- No side effects: every board function returns a new board and never mutates its input.
+- No hidden randomness: `spawn` accepts an optional random function, and
+  `createRng(seed)` makes a game reproducible.
+- No framework code: only board maths lives here. Rendering, storage, and
+  animation belong to the application.
 
 ## Install
 
@@ -37,7 +39,15 @@ const board = [
 ## Basic usage
 
 ```js
-import { move, spawn, hasMoves, canMove } from '@nefelibataaaaa/arcade-core';
+import {
+  move,
+  spawn,
+  hasMoves,
+  canMove,
+  createRng
+} from '@nefelibataaaaa/arcade-core';
+
+const rng = createRng('my-seed');
 
 let board = [
   [2, 2, 0, 0],
@@ -48,7 +58,7 @@ let board = [
 
 if (canMove(board, 'left')) {
   board = move(board, 'left'); // [[4, 0, 0, 0], ...]
-  board = spawn(board); // add a 2 or 4 to a random empty cell
+  board = spawn(board, rng); // reproducible 2 or 4 in an empty cell
 }
 
 console.log(hasMoves(board)); // true while another move exists
@@ -89,9 +99,55 @@ Returns `true` when moving in `direction` would change at least one cell. It
 returns `false` when that direction is blocked (for example, all tiles are
 already against that edge and cannot merge).
 
+## Seeded games and UI helpers
+
+These functions were added in **1.1.0**. They are optional: the four functions
+above are enough to play 2048.
+
+### `createBoard(rng?)`
+
+Creates a fresh board with exactly two starting tiles, placed with `spawn`.
+Passing a seeded `rng` makes the opening position reproducible.
+
+```js
+const board = createBoard(createRng('opening'));
+```
+
+### `createRng(seed)`
+
+Creates a deterministic pseudo-random number generator (mulberry32). The same
+seed always yields the same sequence of numbers in `[0, 1)`, and different
+generators keep independent state.
+
+```js
+const rng = createRng(42);
+rng(); // always the same first number for seed 42
+```
+
+Seeds may be numbers or strings; a number and its string form are equivalent.
+
+### `moveDetails(board, direction)`
+
+Runs the same logic as `move`, but also returns the data a UI needs to animate
+the turn:
+
+```js
+const details = moveDetails(board, 'left');
+
+details.board; // the resulting board, identical to move(board, 'left')
+details.moved; // false when the direction is blocked
+details.gained; // score earned by merges in this move
+details.moves; // [{ from: { row, col }, to: { row, col }, value, merged }, ...]
+details.merges; // [{ row, col, value, sources: [{ row, col }, ...] }, ...]
+```
+
+`moves` contains one entry for every occupied source cell. In a merge, both
+source tiles map to the same destination, and `merges` records the new tile
+value plus its two sources.
+
 ## Errors and validation
 
-All four functions validate their input:
+All board functions validate their input:
 
 - a board must be 4 rows of 4 non-negative integers;
 - a direction must be one of the four supported strings;
