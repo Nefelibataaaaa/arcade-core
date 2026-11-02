@@ -1,0 +1,40 @@
+{
+  "name": "@nefelibataaaaa/arcade-core",
+  "version": "1.0.0",
+  "description": "Dependency-free, pure 2048 game logic: move, spawn, hasMoves, and canMove.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "2048",
+    "game-logic",
+    "pure-functions",
+    "board-game",
+    "arcade"
+  ],
+  "author": "Cheney Gong",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nefelibataaaaa/arcade-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nefelibataaaaa/arcade-core/issues"
+  },
+  "homepage": "https://github.com/Nefelibataaaaa/arcade-core#readme",
+  "engines": {
+    "node": ">=18"
+  }
+}
