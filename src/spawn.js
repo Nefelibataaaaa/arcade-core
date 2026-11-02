@@ -1,4 +1,4 @@
-import { assertBoard, cloneBoard, emptyCells } from './board.js';
+import { assertBoard, cloneBoard, emptyBoard, emptyCells } from './board.js';
 
 /**
  * Place a new tile in a random empty cell. The tile is a 2 with probability
@@ -38,4 +38,15 @@ export function spawn(board, rng = Math.random) {
 	next[row][col] = valueRoll < 0.9 ? 2 : 4;
 
 	return next;
+}
+
+/**
+ * Create a new game board with two starting tiles. The tiles are placed with
+ * `spawn`, so passing a seeded `rng` makes the whole opening reproducible.
+ *
+ * @param {() => number} [rng]
+ * @returns {import('./board.js').Board} A new board with exactly two tiles.
+ */
+export function createBoard(rng = Math.random) {
+	return spawn(spawn(emptyBoard(), rng), rng);
 }

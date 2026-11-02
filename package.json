@@ -1,7 +1,7 @@
 {
   "name": "@nefelibataaaaa/arcade-core",
-  "version": "1.0.0",
-  "description": "Dependency-free, pure 2048 game logic: move, spawn, hasMoves, and canMove.",
+  "version": "1.1.0",
+  "description": "Dependency-free, pure 2048 game logic: move, spawn, hasMoves, canMove, plus seeded RNG and movement details.",
   "type": "module",
   "main": "./src/index.js",
   "exports": {
